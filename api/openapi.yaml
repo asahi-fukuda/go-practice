@@ -1,0 +1,87 @@
+openapi: 3.0.1
+info:
+  title: Message API
+  version: 1.0.0
+servers:
+- url: /
+paths:
+  /messages:
+    get:
+      operationId: getMessages
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Message'
+                type: array
+          description: A list of all messages
+      summary: Get all messages
+    post:
+      operationId: createMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMessage'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: The created message
+      summary: Create a new message
+components:
+  schemas:
+    NewMessage:
+      example:
+        updated_at: 2000-01-23T04:56:07.000+00:00
+        name: name
+        created_at: 2000-01-23T04:56:07.000+00:00
+        message: message
+      properties:
+        name:
+          type: string
+        message:
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+      required:
+      - created_at
+      - message
+      - name
+      - updated_at
+      type: object
+    Message:
+      example:
+        updated_at: 2000-01-23T04:56:07.000+00:00
+        name: name
+        created_at: 2000-01-23T04:56:07.000+00:00
+        id: 0
+        message: message
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        message:
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+      required:
+      - created_at
+      - id
+      - message
+      - name
+      - updated_at
+      type: object
