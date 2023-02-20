@@ -10,16 +10,27 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
 	openapi "github.com/GIT_USER_ID/GIT_REPO_ID/go"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 func main() {
+	// DB Open
+	db, err := sqlx.Open("mysql", "root:secret@tcp(127.0.0.1:3306)/go_practice?parseTime=true")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer db.Close()
+
 	log.Printf("Server started")
 
-	DefaultApiService := openapi.NewDefaultApiService()
+	DefaultApiService := openapi.NewDefaultApiService(db)
 	DefaultApiController := openapi.NewDefaultApiController(DefaultApiService)
 
 	router := openapi.NewRouter(DefaultApiController)
