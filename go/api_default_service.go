@@ -11,8 +11,16 @@ package openapi
 
 import (
 	"context"
+	"fmt"
 	"net/http"
-	"errors"
+	"time"
+
+	infra "github.com/GIT_USER_ID/GIT_REPO_ID/go/infra/mysql"
+	"github.com/GIT_USER_ID/GIT_REPO_ID/go/model"
+	"github.com/GIT_USER_ID/GIT_REPO_ID/go/repository"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 // DefaultApiService is a service that implements the logic for the DefaultApiServicer
@@ -27,23 +35,38 @@ func NewDefaultApiService() DefaultApiServicer {
 }
 
 // CreateMessage - Create a new message
+// Saveを実行する
 func (s *DefaultApiService) CreateMessage(ctx context.Context, newMessage NewMessage) (ImplResponse, error) {
-	// TODO - update CreateMessage with the required logic for this service method.
-	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+	db, err := sqlx.Open("mysql", "root:secret@tcp(127.0.0.1:3306)/go_practice?parseTime=true")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer db.Close()
 
-	//TODO: Uncomment the next line to return response Response(201, Message{}) or use other options such as http.Ok ...
-	//return Response(201, Message{}), nil
+	var f repository.MessageRepository = &infra.MessageRepository{DB: db}
 
-	return Response(http.StatusNotImplemented, nil), errors.New("CreateMessage method not implemented")
+	message := &model.Message{Name: newMessage.Name, Message: newMessage.Message, CreatedAt: time.Now(), UpdatedAt: time.Now()}
+
+	f.Save(message)
+
+	return Response(http.StatusOK, nil), nil
 }
 
 // GetMessages - Get all messages
+// Listを実行する
 func (s *DefaultApiService) GetMessages(ctx context.Context) (ImplResponse, error) {
-	// TODO - update GetMessages with the required logic for this service method.
-	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+	db, err := sqlx.Open("mysql", "root:secret@tcp(127.0.0.1:3306)/go_practice?parseTime=true")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer db.Close()
 
-	//TODO: Uncomment the next line to return response Response(200, []Message{}) or use other options such as http.Ok ...
-	//return Response(200, []Message{}), nil
+	var f repository.MessageRepository = &infra.MessageRepository{DB: db}
 
-	return Response(http.StatusNotImplemented, nil), errors.New("GetMessages method not implemented")
+	messages, err := f.List()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return Response(http.StatusOK, messages), nil
 }
