@@ -15,6 +15,8 @@ import (
 	"net/http"
 
 	openapi "github.com/GIT_USER_ID/GIT_REPO_ID/go"
+	infra "github.com/GIT_USER_ID/GIT_REPO_ID/go/infra/mysql"
+	"github.com/GIT_USER_ID/GIT_REPO_ID/go/repository"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -30,7 +32,9 @@ func main() {
 
 	log.Printf("Server started")
 
-	DefaultApiService := openapi.NewDefaultApiService(db)
+	var f repository.MessageRepository = &infra.MessageRepository{DB: db}
+
+	DefaultApiService := openapi.NewDefaultApiService(f)
 	DefaultApiController := openapi.NewDefaultApiController(DefaultApiService)
 
 	router := openapi.NewRouter(DefaultApiController)
