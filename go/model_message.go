@@ -14,24 +14,19 @@ import (
 )
 
 type Message struct {
-
-	Id int32 `json:"id"`
-
-	Name string `json:"name"`
-
-	Message string `json:"message"`
-
+	Id        int64     `json:"id"`
+	Name      string    `json:"name"`
+	Message   string    `json:"message"`
 	CreatedAt time.Time `json:"created_at"`
-
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // AssertMessageRequired checks if the required fields are not zero-ed
 func AssertMessageRequired(obj Message) error {
 	elements := map[string]interface{}{
-		"id": obj.Id,
-		"name": obj.Name,
-		"message": obj.Message,
+		"id":         obj.Id,
+		"name":       obj.Name,
+		"message":    obj.Message,
 		"created_at": obj.CreatedAt,
 		"updated_at": obj.UpdatedAt,
 	}

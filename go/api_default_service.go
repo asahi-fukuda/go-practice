@@ -11,39 +11,63 @@ package openapi
 
 import (
 	"context"
+	"fmt"
 	"net/http"
-	"errors"
+	"time"
+
+	"github.com/GIT_USER_ID/GIT_REPO_ID/go/model"
+	"github.com/GIT_USER_ID/GIT_REPO_ID/go/repository"
 )
 
 // DefaultApiService is a service that implements the logic for the DefaultApiServicer
 // This service should implement the business logic for every endpoint for the DefaultApi API.
 // Include any external packages or services that will be required by this service.
 type DefaultApiService struct {
+	Repository repository.MessageRepository
 }
 
 // NewDefaultApiService creates a default api service
-func NewDefaultApiService() DefaultApiServicer {
-	return &DefaultApiService{}
+func NewDefaultApiService(repository repository.MessageRepository) DefaultApiServicer {
+	return &DefaultApiService{Repository: repository}
 }
 
 // CreateMessage - Create a new message
+// Saveを実行する
 func (s *DefaultApiService) CreateMessage(ctx context.Context, newMessage NewMessage) (ImplResponse, error) {
-	// TODO - update CreateMessage with the required logic for this service method.
-	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+	message := &model.Message{Name: newMessage.Name, Message: newMessage.Message, CreatedAt: time.Now(), UpdatedAt: time.Now()}
 
-	//TODO: Uncomment the next line to return response Response(201, Message{}) or use other options such as http.Ok ...
-	//return Response(201, Message{}), nil
+	s.Repository.Save(message)
 
-	return Response(http.StatusNotImplemented, nil), errors.New("CreateMessage method not implemented")
+	// 生成されたMessageに詰め直す
+	m := Message{
+		Name:      message.Name,
+		Message:   message.Message,
+		CreatedAt: message.CreatedAt,
+		UpdatedAt: message.UpdatedAt,
+	}
+
+	return Response(http.StatusCreated, m), nil
 }
 
 // GetMessages - Get all messages
+// Listを実行する
 func (s *DefaultApiService) GetMessages(ctx context.Context) (ImplResponse, error) {
-	// TODO - update GetMessages with the required logic for this service method.
-	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+	messages, err := s.Repository.List()
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	//TODO: Uncomment the next line to return response Response(200, []Message{}) or use other options such as http.Ok ...
-	//return Response(200, []Message{}), nil
+	// 生成されたMessageに詰め直す
+	var messageList []*Message
+	for _, message := range messages {
+		messageList = append(messageList, &Message{
+			Id:        message.ID,
+			Name:      message.Name,
+			Message:   message.Message,
+			CreatedAt: message.CreatedAt,
+			UpdatedAt: message.UpdatedAt,
+		})
+	}
 
-	return Response(http.StatusNotImplemented, nil), errors.New("GetMessages method not implemented")
+	return Response(http.StatusOK, messageList), nil
 }
