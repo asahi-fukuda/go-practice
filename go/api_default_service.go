@@ -58,9 +58,9 @@ func (s *DefaultApiService) GetMessages(ctx context.Context) (ImplResponse, erro
 	}
 
 	// 生成されたMessageに詰め直す
-	var messageList []Message
+	var messageList []*Message
 	for _, message := range messages {
-		messageList = append(messageList, Message{
+		messageList = append(messageList, &Message{
 			Id:        message.ID,
 			Name:      message.Name,
 			Message:   message.Message,
