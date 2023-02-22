@@ -20,6 +20,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -39,5 +40,7 @@ func main() {
 
 	router := openapi.NewRouter(DefaultApiController)
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	handler := cors.Default().Handler(router)
+
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }
