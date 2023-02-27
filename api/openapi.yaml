@@ -37,26 +37,16 @@ components:
   schemas:
     NewMessage:
       example:
-        updated_at: 2000-01-23T04:56:07.000+00:00
         name: name
-        created_at: 2000-01-23T04:56:07.000+00:00
         message: message
       properties:
         name:
           type: string
         message:
           type: string
-        created_at:
-          format: date-time
-          type: string
-        updated_at:
-          format: date-time
-          type: string
       required:
-      - created_at
       - message
       - name
-      - updated_at
       type: object
     Message:
       example:
@@ -67,6 +57,7 @@ components:
         message: message
       properties:
         id:
+          format: int64
           type: integer
         name:
           type: string

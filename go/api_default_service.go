@@ -40,10 +40,8 @@ func (s *DefaultApiService) CreateMessage(ctx context.Context, newMessage NewMes
 
 	// 生成されたMessageに詰め直す
 	m := Message{
-		Name:      message.Name,
-		Message:   message.Message,
-		CreatedAt: message.CreatedAt,
-		UpdatedAt: message.UpdatedAt,
+		Name:    message.Name,
+		Message: message.Message,
 	}
 
 	return Response(http.StatusCreated, m), nil
