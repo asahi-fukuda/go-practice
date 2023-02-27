@@ -9,19 +9,11 @@
 
 package openapi
 
-import (
-	"time"
-)
-
 type NewMessage struct {
 
 	Name string `json:"name"`
 
 	Message string `json:"message"`
-
-	CreatedAt time.Time `json:"created_at"`
-
-	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // AssertNewMessageRequired checks if the required fields are not zero-ed
@@ -29,8 +21,6 @@ func AssertNewMessageRequired(obj NewMessage) error {
 	elements := map[string]interface{}{
 		"name": obj.Name,
 		"message": obj.Message,
-		"created_at": obj.CreatedAt,
-		"updated_at": obj.UpdatedAt,
 	}
 	for name, el := range elements {
 		if isZero := IsZeroValue(el); isZero {
